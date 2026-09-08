@@ -1,0 +1,5 @@
+<div class="sb-loading-skeleton" aria-hidden="true">
+  @for (row of rowIndexes(); track row) {
+    <div class="sb-loading-skeleton__row" [style.height.px]="rowHeight()"></div>
+  }
+</div>

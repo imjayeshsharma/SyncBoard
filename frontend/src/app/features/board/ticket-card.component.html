@@ -1,0 +1,41 @@
+<a class="sb-ticket-card" [class.sb-ticket-card--overdue]="ticket().overdue" [routerLink]="['/tickets', ticket().id]">
+  <span class="sb-ticket-card__stripe" [attr.data-priority]="ticket().priority"></span>
+
+  <div class="sb-ticket-card__body">
+    <div class="sb-ticket-card__top">
+      <sb-priority-chip [priority]="ticket().priority" />
+      @if (ticket().overdue) {
+        <sb-overdue-badge [overdue]="true" />
+      }
+    </div>
+
+    <h3 class="sb-ticket-card__title">{{ ticket().title }}</h3>
+
+    @if (ticket().category) {
+      <span class="sb-ticket-card__category">{{ ticket().category }}</span>
+    }
+
+    <div class="sb-ticket-card__footer">
+      <sb-user-avatar [user]="ticket().assignee ?? null" [showName]="true" [size]="22" />
+      @if (dueLabel()) {
+        <span class="sb-ticket-card__due">
+          <mat-icon class="sb-ticket-card__due-icon">event</mat-icon>
+          {{ dueLabel() }}
+        </span>
+      }
+    </div>
+
+    <div class="sb-ticket-card__counts">
+      @if (ticket().commentCount > 0) {
+        <span class="sb-ticket-card__count">
+          <mat-icon>chat_bubble</mat-icon>{{ ticket().commentCount }}
+        </span>
+      }
+      @if (ticket().linkCount > 0) {
+        <span class="sb-ticket-card__count">
+          <mat-icon>link</mat-icon>{{ ticket().linkCount }}
+        </span>
+      }
+    </div>
+  </div>
+</a>

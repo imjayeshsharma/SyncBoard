@@ -1,0 +1,10 @@
+.sb-add-link-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 320px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}

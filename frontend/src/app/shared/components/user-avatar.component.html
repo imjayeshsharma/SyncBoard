@@ -1,0 +1,14 @@
+<span class="sb-user-avatar">
+  <span
+    class="sb-user-avatar__circle"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [style.font-size.px]="size() * 0.4"
+    [class.sb-user-avatar__circle--unassigned]="!user()"
+  >
+    {{ initials() }}
+  </span>
+  @if (showName()) {
+    <span class="sb-user-avatar__name">{{ user()?.fullName ?? 'Unassigned' }}</span>
+  }
+</span>

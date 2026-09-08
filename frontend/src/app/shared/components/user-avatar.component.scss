@@ -1,0 +1,30 @@
+.sb-user-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+
+  &__circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--mat-sys-primary-container, #d6e3ff);
+    color: var(--mat-sys-on-primary-container, #001b3f);
+    font-weight: 600;
+    flex: none;
+    line-height: 1;
+
+    &--unassigned {
+      background: var(--mat-sys-surface-container-high, #e2e2e2);
+      color: var(--mat-sys-on-surface-variant, #666);
+    }
+  }
+
+  &__name {
+    font-size: 0.8125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

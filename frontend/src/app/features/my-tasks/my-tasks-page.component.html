@@ -1,0 +1,24 @@
+<div class="sb-my-tasks-page">
+  <header class="sb-my-tasks-page__header">
+    <h1>My Tasks</h1>
+  </header>
+
+  @if (!hasAnyTickets() && !boardStore.loading()) {
+    <sb-empty-state
+      icon="task_alt"
+      title="Nothing assigned to you"
+      message="Tickets assigned to you will show up here, grouped by status."
+    />
+  } @else {
+    <div class="sb-my-tasks-page__board" cdkDropListGroup>
+      @for (column of myColumns(); track column.status) {
+        <sb-board-column
+          [status]="column.status"
+          [tickets]="column.tickets"
+          [loading]="boardStore.loading() && column.tickets.length === 0"
+          (dropped)="onDrop($event)"
+        />
+      }
+    </div>
+  }
+</div>

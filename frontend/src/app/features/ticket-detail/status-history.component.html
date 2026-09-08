@@ -1,0 +1,31 @@
+<mat-expansion-panel class="sb-status-history">
+  <mat-expansion-panel-header>
+    <mat-panel-title>Activity</mat-panel-title>
+    <mat-panel-description>{{ history().length }} change{{ history().length === 1 ? '' : 's' }}</mat-panel-description>
+  </mat-expansion-panel-header>
+
+  @if (history().length === 0) {
+    <sb-empty-state icon="history" title="No status changes yet" />
+  } @else {
+    <ol class="sb-status-history__list">
+      @for (entry of history(); track entry.id) {
+        <li class="sb-status-history__item">
+          <div class="sb-status-history__transition">
+            @if (entry.fromStatus) {
+              <sb-status-badge [status]="entry.fromStatus" />
+              <mat-icon class="sb-status-history__arrow">arrow_forward</mat-icon>
+            }
+            <sb-status-badge [status]="entry.toStatus" />
+          </div>
+          <div class="sb-status-history__meta">
+            <sb-user-avatar [user]="entry.changedBy" [showName]="true" [size]="20" />
+            <span class="sb-status-history__time">{{ entry.changedAt | relativeTime }}</span>
+          </div>
+          @if (entry.note) {
+            <p class="sb-status-history__note">{{ entry.note }}</p>
+          }
+        </li>
+      }
+    </ol>
+  }
+</mat-expansion-panel>

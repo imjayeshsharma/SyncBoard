@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<div mat-dialog-content>
+  @if (data.message) {
+    <p class="sb-confirm-dialog__message">{{ data.message }}</p>
+  }
+  @if (data.requireNote) {
+    <mat-form-field appearance="outline" class="sb-confirm-dialog__note">
+      <mat-label>{{ data.noteLabel ?? 'Reason' }}</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        [ngModel]="note()"
+        (ngModelChange)="note.set($event)"
+        required
+      ></textarea>
+    </mat-form-field>
+  }
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">{{ data.cancelLabel ?? 'Cancel' }}</button>
+  <button
+    mat-flat-button
+    type="button"
+    [color]="data.tone === 'warn' ? 'warn' : 'primary'"
+    [disabled]="!canConfirm()"
+    (click)="confirm()"
+  >
+    {{ data.confirmLabel ?? 'Confirm' }}
+  </button>
+</div>

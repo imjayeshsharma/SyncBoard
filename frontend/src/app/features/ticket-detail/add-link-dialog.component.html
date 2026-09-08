@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Add a resource link</h2>
+<div mat-dialog-content class="sb-add-link-dialog">
+  <mat-form-field appearance="outline">
+    <mat-label>URL</mat-label>
+    <input
+      matInput
+      placeholder="https://…"
+      [ngModel]="url()"
+      (ngModelChange)="url.set($event)"
+      required
+    />
+    @if (url() && !urlValid()) {
+      <mat-error>Enter a valid URL</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Title (optional)</mat-label>
+    <input matInput [ngModel]="linkTitle()" (ngModelChange)="linkTitle.set($event)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Platform</mat-label>
+    <mat-select [ngModel]="platform()" (ngModelChange)="platform.set($event)">
+      <mat-option [value]="null">Auto-detect</mat-option>
+      @for (option of platformOptions; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="button" [disabled]="!urlValid()" (click)="submit()">
+    Add link
+  </button>
+</div>
