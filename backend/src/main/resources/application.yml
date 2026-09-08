@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: syncboard-api
+
+  datasource:
+    url: ${SYNCBOARD_DB_URL:jdbc:postgresql://localhost:5432/syncboard}
+    username: ${SYNCBOARD_DB_USER:syncboard}
+    password: ${SYNCBOARD_DB_PASSWORD:syncboard}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: ${SYNCBOARD_REDIS_HOST:localhost}
+      port: ${SYNCBOARD_REDIS_PORT:6379}
+      timeout: 2s
+
+  cache:
+    type: ${SYNCBOARD_CACHE_TYPE:redis}
+    redis:
+      time-to-live: 60s
+      cache-null-values: false
+
+  graphql:
+    schema:
+      locations: classpath:graphql/
+    graphiql:
+      enabled: ${SYNCBOARD_GRAPHIQL_ENABLED:false}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:changeme}
+            client-secret: ${GOOGLE_CLIENT_SECRET:changeme}
+            scope: openid, profile, email
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.syncboard: ${SYNCBOARD_LOG_LEVEL:INFO}
+
+# ---------------------------------------------------------------------------
+# SyncBoard application settings (bound by com.syncboard.config.SyncBoardProperties)
+# ---------------------------------------------------------------------------
+syncboard:
+  # Google Workspace hosted-domain claim ("hd") that an ID token MUST carry.
+  allowed-hosted-domain: ${SYNCBOARD_ALLOWED_HD:example.com}
+  # Origins allowed to call the API (Angular dev server by default).
+  cors-allowed-origins: ${SYNCBOARD_CORS_ORIGINS:http://localhost:4200}
+  board:
+    cache-ttl-seconds: 60
+  realtime:
+    stomp-endpoint: /ws
+    broker-prefix: /topic
+    app-prefix: /app
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  cache:
+    type: simple
+  graphql:
+    graphiql:
+      enabled: true
+logging:
+  level:
+    com.syncboard: DEBUG
+    org.hibernate.SQL: DEBUG
