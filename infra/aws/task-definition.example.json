@@ -1,0 +1,50 @@
+{
+  "_comment": "Illustrative sketch only — not deployed by this repository. Placeholders in angle brackets must be filled in per AWS account/environment.",
+  "family": "syncboard-api",
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::<account-id>:role/syncboard-api-execution-role",
+  "taskRoleArn": "arn:aws:iam::<account-id>:role/syncboard-api-task-role",
+  "containerDefinitions": [
+    {
+      "name": "syncboard-api",
+      "image": "<account-id>.dkr.ecr.<region>.amazonaws.com/syncboard-api:<tag>",
+      "essential": true,
+      "portMappings": [
+        { "containerPort": 8080, "protocol": "tcp" }
+      ],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "default" },
+        { "name": "SERVER_PORT", "value": "8080" },
+        { "name": "SYNCBOARD_DB_URL", "value": "jdbc:postgresql://<rds-endpoint>:5432/syncboard" },
+        { "name": "SYNCBOARD_REDIS_HOST", "value": "<elasticache-endpoint>" },
+        { "name": "SYNCBOARD_REDIS_PORT", "value": "6379" },
+        { "name": "SYNCBOARD_ALLOWED_HD", "value": "example.com" },
+        { "name": "SYNCBOARD_CORS_ORIGINS", "value": "https://<web-domain>" }
+      ],
+      "secrets": [
+        { "name": "SYNCBOARD_DB_USER", "valueFrom": "arn:aws:secretsmanager:<region>:<account-id>:secret:syncboard/db-user" },
+        { "name": "SYNCBOARD_DB_PASSWORD", "valueFrom": "arn:aws:secretsmanager:<region>:<account-id>:secret:syncboard/db-password" },
+        { "name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:<region>:<account-id>:secret:syncboard/google-client-id" },
+        { "name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:<region>:<account-id>:secret:syncboard/google-client-secret" }
+      ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/actuator/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 45
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/syncboard-api",
+          "awslogs-region": "<region>",
+          "awslogs-stream-prefix": "api"
+        }
+      }
+    }
+  ]
+}

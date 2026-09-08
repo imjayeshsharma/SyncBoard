@@ -1,0 +1,22 @@
+# Stage 8 — Infrastructure: keep the backend build context small and clean
+target/
+*.class
+*.jar
+*.war
+.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.log
+
+# Never send local secrets into a build context.
+.env
+.env.*
+!.env.example
+application-local.yml
+secrets/
+
+.git/
+.gitignore
