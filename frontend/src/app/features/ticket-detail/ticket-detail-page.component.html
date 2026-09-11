@@ -1,0 +1,162 @@
+@if (ticketStore.loading() && !ticket()) {
+  <div class="sb-ticket-detail-page__loading">
+    <sb-loading-skeleton [rows]="4" [rowHeight]="60" />
+  </div>
+} @else if (!ticket()) {
+  <sb-empty-state icon="search_off" title="Ticket not found" message="It may have been removed." />
+} @else {
+  <div class="sb-ticket-detail-page">
+    <section class="sb-ticket-detail-page__main">
+      <header class="sb-ticket-detail-page__title-row">
+        @if (editingTitle()) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sb-ticket-detail-page__title-field">
+            <input
+              matInput
+              [ngModel]="titleDraft()"
+              (ngModelChange)="titleDraft.set($event)"
+              (keydown.enter)="saveTitle()"
+              (keydown.escape)="editingTitle.set(false)"
+            />
+          </mat-form-field>
+          <button mat-icon-button (click)="saveTitle()" aria-label="Save title"><mat-icon>check</mat-icon></button>
+          <button mat-icon-button (click)="editingTitle.set(false)" aria-label="Cancel edit"><mat-icon>close</mat-icon></button>
+        } @else {
+          <h1 class="sb-ticket-detail-page__title" (click)="startEditTitle()">{{ ticket()!.title }}</h1>
+          <button mat-icon-button (click)="startEditTitle()" aria-label="Edit title"><mat-icon>edit</mat-icon></button>
+        }
+      </header>
+
+      <div class="sb-ticket-detail-page__badges">
+        <sb-status-badge [status]="ticket()!.status" />
+        <sb-priority-chip [priority]="ticket()!.priority" />
+        <sb-overdue-badge [overdue]="ticket()!.overdue" />
+      </div>
+
+      <section class="sb-ticket-detail-page__description">
+        <div class="sb-ticket-detail-page__section-header">
+          <h2>Description</h2>
+          @if (!editingDescription()) {
+            <button mat-icon-button (click)="startEditDescription()" aria-label="Edit description">
+              <mat-icon>edit</mat-icon>
+            </button>
+          }
+        </div>
+
+        @if (editingDescription()) {
+          <mat-form-field appearance="outline" class="sb-ticket-detail-page__description-field">
+            <textarea
+              matInput
+              rows="4"
+              [ngModel]="descriptionDraft()"
+              (ngModelChange)="descriptionDraft.set($event)"
+            ></textarea>
+          </mat-form-field>
+          <div class="sb-ticket-detail-page__description-actions">
+            <button mat-button (click)="editingDescription.set(false)">Cancel</button>
+            <button mat-flat-button color="primary" (click)="saveDescription()">Save</button>
+          </div>
+        } @else if (ticket()!.description) {
+          <p class="sb-ticket-detail-page__description-text">{{ ticket()!.description }}</p>
+        } @else {
+          <p class="sb-ticket-detail-page__description-empty">No description yet.</p>
+        }
+      </section>
+
+      <section class="sb-ticket-detail-page__comments">
+        <h2>Comments</h2>
+
+        <div class="sb-ticket-detail-page__composer">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sb-ticket-detail-page__composer-field">
+            <textarea
+              matInput
+              rows="2"
+              placeholder="Add a comment…"
+              [ngModel]="newCommentDraft()"
+              (ngModelChange)="newCommentDraft.set($event)"
+            ></textarea>
+          </mat-form-field>
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="!newCommentDraft().trim()"
+            (click)="submitRootComment()"
+          >
+            Comment
+          </button>
+        </div>
+
+        @if (ticket()!.comments.length === 0) {
+          <sb-empty-state icon="forum" title="No comments yet" message="Start the conversation." />
+        } @else {
+          <div class="sb-ticket-detail-page__thread-list">
+            @for (comment of ticket()!.comments; track comment.id) {
+              <sb-comment-thread [comment]="comment" (submitReply)="addReply($event)" />
+            }
+          </div>
+        }
+      </section>
+
+      <section class="sb-ticket-detail-page__history">
+        <sb-status-history [history]="ticket()!.history" />
+      </section>
+    </section>
+
+    <aside class="sb-ticket-detail-page__sidebar">
+      <section class="sb-ticket-detail-page__field-group">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Status</mat-label>
+          <mat-select
+            [ngModel]="ticket()!.status"
+            (ngModelChange)="changeStatus($event)"
+          >
+            <mat-option [value]="ticket()!.status" disabled>{{ statusLabels[ticket()!.status] }} (current)</mat-option>
+            @for (next of allowedStatuses(); track next) {
+              <mat-option [value]="next">{{ statusLabels[next] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Priority</mat-label>
+          <mat-select [ngModel]="ticket()!.priority" (ngModelChange)="changePriority($event)">
+            @for (priority of priorities; track priority) {
+              <mat-option [value]="priority">{{ priority }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Assignee</mat-label>
+          <mat-select
+            [ngModel]="ticket()!.assignee?.id ?? null"
+            (ngModelChange)="changeAssignee($event)"
+          >
+            <mat-option [value]="null">Unassigned</mat-option>
+            @for (user of availableAssignees; track user.id) {
+              <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Due date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="dueDatePicker"
+            [ngModel]="dueDateValue()"
+            (ngModelChange)="changeDueDate($event)"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker" />
+          <mat-datepicker #dueDatePicker />
+        </mat-form-field>
+      </section>
+
+      <mat-divider />
+
+      <section class="sb-ticket-detail-page__links">
+        <sb-link-list [links]="ticket()!.links" (linkAdded)="addLink($event)" (linkRemoved)="removeLink($event)" />
+      </section>
+    </aside>
+  </div>
+}

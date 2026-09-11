@@ -1,0 +1,32 @@
+<div class="sb-link-list">
+  <header class="sb-link-list__header">
+    <h3 class="sb-link-list__title">Linked resources</h3>
+    <button mat-stroked-button type="button" (click)="openAddDialog()">
+      <mat-icon>add_link</mat-icon>
+      Add link
+    </button>
+  </header>
+
+  @if (links().length === 0) {
+    <sb-empty-state icon="link_off" title="No linked resources" message="Attach Keka, Drive, GitHub or Slack links." />
+  } @else {
+    <ul class="sb-link-list__items">
+      @for (link of links(); track link.id) {
+        <li class="sb-link-list__item">
+          <mat-icon class="sb-link-list__icon">{{ link.platform | platformIcon }}</mat-icon>
+          <a class="sb-link-list__link" [href]="link.url" target="_blank" rel="noopener noreferrer">
+            {{ link.linkTitle || link.url }}
+          </a>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Remove link"
+            (click)="remove(link.id)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

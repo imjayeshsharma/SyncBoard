@@ -1,0 +1,26 @@
+.sb-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &__row {
+    border-radius: 8px;
+    background: linear-gradient(
+      90deg,
+      var(--mat-sys-surface-container, #eee) 25%,
+      var(--mat-sys-surface-container-high, #e0e0e0) 37%,
+      var(--mat-sys-surface-container, #eee) 63%
+    );
+    background-size: 400% 100%;
+    animation: sb-skeleton-shimmer 1.4s ease infinite;
+  }
+}
+
+@keyframes sb-skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

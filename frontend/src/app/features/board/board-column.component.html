@@ -1,0 +1,26 @@
+<div class="sb-board-column">
+  <header class="sb-board-column__header">
+    <h2 class="sb-board-column__label">{{ label() }}</h2>
+    <span class="sb-board-column__count">{{ tickets().length }}</span>
+  </header>
+
+  <div
+    class="sb-board-column__list"
+    cdkDropList
+    [id]="dropListId()"
+    [cdkDropListData]="tickets()"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @if (loading()) {
+      <sb-loading-skeleton [rows]="3" [rowHeight]="96" />
+    } @else if (tickets().length === 0) {
+      <sb-empty-state icon="inbox" title="No tickets" message="Drag a card here or create one." />
+    } @else {
+      @for (ticket of tickets(); track ticket.id) {
+        <div class="sb-board-column__item" cdkDrag [cdkDragData]="ticket">
+          <sb-ticket-card [ticket]="ticket" />
+        </div>
+      }
+    }
+  </div>
+</div>

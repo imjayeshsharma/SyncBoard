@@ -1,0 +1,73 @@
+// Stage 4 — Angular 22 shell
+
+.sb-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 0.75rem;
+}
+
+.sb-wordmark {
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+  margin-right: 1rem;
+}
+
+.sb-nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.sb-nav-active {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.sb-spacer {
+  flex: 1 1 auto;
+}
+
+.sb-new-ticket {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.75rem;
+}
+
+.sb-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sb-user-loading {
+  opacity: 0.7;
+  font-size: 0.875rem;
+}
+
+.sb-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--mat-sys-primary-container, rgba(255, 255, 255, 0.2));
+  color: var(--mat-sys-on-primary-container, inherit);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sb-user-name {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.sb-content {
+  display: block;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}

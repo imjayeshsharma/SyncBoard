@@ -1,0 +1,22 @@
+.sb-priority-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--chip-color);
+  background: color-mix(in srgb, var(--chip-color) 14%, transparent);
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--chip-color);
+    flex: none;
+  }
+}

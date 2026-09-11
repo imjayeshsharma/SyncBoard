@@ -1,0 +1,61 @@
+<div class="sb-board-page">
+  <header class="sb-board-page__toolbar">
+    <mat-form-field appearance="outline" class="sb-board-page__search" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="Search tickets…"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sb-board-page__filter">
+      <mat-label>Priority</mat-label>
+      <mat-select [ngModel]="priorityFilter()" (ngModelChange)="priorityFilter.set($event)">
+        <mat-option value="all">All priorities</mat-option>
+        @for (priority of priorities; track priority) {
+          <mat-option [value]="priority">{{ priority }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sb-board-page__filter">
+      <mat-label>Assignee</mat-label>
+      <mat-select [ngModel]="assigneeFilter()" (ngModelChange)="assigneeFilter.set($event)">
+        <mat-option value="all">All assignees</mat-option>
+        @for (user of availableAssignees(); track user.id) {
+          <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-slide-toggle
+      class="sb-board-page__mine"
+      [ngModel]="myTicketsOnly()"
+      (ngModelChange)="myTicketsOnly.set($event)"
+    >
+      My tickets only
+    </mat-slide-toggle>
+
+    <span class="sb-board-page__spacer"></span>
+
+    @if (overdueCount() > 0) {
+      <span class="sb-board-page__overdue-chip">
+        <mat-icon>warning</mat-icon>
+        {{ overdueCount() }} overdue
+      </span>
+    }
+  </header>
+
+  <div class="sb-board-page__board" cdkDropListGroup>
+    @for (column of filteredColumns(); track column.status) {
+      <sb-board-column
+        [status]="column.status"
+        [tickets]="column.tickets"
+        [loading]="boardStore.loading() && column.tickets.length === 0"
+        (dropped)="onDrop($event)"
+      />
+    }
+  </div>
+</div>

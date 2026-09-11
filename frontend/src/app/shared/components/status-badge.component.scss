@@ -1,0 +1,37 @@
+.sb-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--mat-sys-surface-container-high, #e8e8e8);
+  color: var(--mat-sys-on-surface-variant, #444);
+
+  &[data-status='Completed'] {
+    background: color-mix(in srgb, #2e7d32 16%, transparent);
+    color: #2e7d32;
+  }
+  &[data-status='Cancelled'] {
+    background: color-mix(in srgb, #757575 20%, transparent);
+    color: #616161;
+  }
+  &[data-status='Blocked'] {
+    background: color-mix(in srgb, #c62828 16%, transparent);
+    color: #c62828;
+  }
+  &[data-status='UnderReview'] {
+    background: color-mix(in srgb, #6a1b9a 16%, transparent);
+    color: #6a1b9a;
+  }
+  &[data-status='InProgress'] {
+    background: color-mix(in srgb, #1565c0 16%, transparent);
+    color: #1565c0;
+  }
+  &[data-status='Triaging'] {
+    background: color-mix(in srgb, #ef6c00 16%, transparent);
+    color: #ef6c00;
+  }
+}

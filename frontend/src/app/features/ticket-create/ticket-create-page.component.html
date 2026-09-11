@@ -1,0 +1,109 @@
+<div class="sb-ticket-create-page">
+  <h1 class="sb-ticket-create-page__heading">New ticket</h1>
+
+  <form class="sb-ticket-create-page__form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" maxlength="200" required />
+      @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+        <mat-error>Title is required</mat-error>
+      } @else if (form.controls.title.hasError('maxlength')) {
+        <mat-error>Title must be 200 characters or fewer</mat-error>
+      } @else if (fieldError('title')) {
+        <mat-error>{{ fieldError('title') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4"></textarea>
+      @if (fieldError('description')) {
+        <mat-error>{{ fieldError('description') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="sb-ticket-create-page__row">
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority" required>
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+        @if (fieldError('priority')) {
+          <mat-error>{{ fieldError('priority') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="sb-ticket-create-page__row">
+      <mat-form-field appearance="outline">
+        <mat-label>Assignee</mat-label>
+        <mat-select formControlName="assigneeId">
+          <mat-option [value]="null">Unassigned</mat-option>
+          @for (user of availableAssignees; track user.id) {
+            <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Due date</mat-label>
+        <input matInput [matDatepicker]="dueDatePicker" formControlName="dueAt" />
+        <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker" />
+        <mat-datepicker #dueDatePicker />
+      </mat-form-field>
+    </div>
+
+    <section class="sb-ticket-create-page__links" formArrayName="links">
+      <div class="sb-ticket-create-page__links-header">
+        <h2>Resource links</h2>
+        <button mat-stroked-button type="button" (click)="addLink()">
+          <mat-icon>add_link</mat-icon>
+          Add link
+        </button>
+      </div>
+
+      @for (link of linksArray.controls; track $index) {
+        <div class="sb-ticket-create-page__link-row" [formGroupName]="$index">
+          <mat-form-field appearance="outline" class="sb-ticket-create-page__link-url">
+            <mat-label>URL</mat-label>
+            <input matInput formControlName="url" placeholder="https://…" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="linkTitle" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Platform</mat-label>
+            <mat-select formControlName="platform">
+              <mat-option value="">Auto-detect</mat-option>
+              @for (option of platformOptions; track option) {
+                <mat-option [value]="option">{{ option }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button type="button" aria-label="Remove link" (click)="removeLinkAt($index)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </section>
+
+    <div class="sb-ticket-create-page__actions">
+      <button mat-button type="button" (click)="cancel()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+        @if (submitting()) {
+          <mat-progress-spinner diameter="18" mode="indeterminate" />
+        } @else {
+          Create ticket
+        }
+      </button>
+    </div>
+  </form>
+</div>

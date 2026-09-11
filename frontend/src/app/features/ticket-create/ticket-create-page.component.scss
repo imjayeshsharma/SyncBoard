@@ -1,0 +1,74 @@
+.sb-ticket-create-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  &__heading {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__links {
+    margin-top: 0.5rem;
+  }
+
+  &__links-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2 {
+      font-size: 0.95rem;
+      margin: 0;
+    }
+  }
+
+  &__link-row {
+    display: grid;
+    grid-template-columns: 2fr 1.4fr 1fr auto;
+    gap: 0.5rem;
+    align-items: start;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__link-url {
+    min-width: 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+
+    button[type='submit'] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}

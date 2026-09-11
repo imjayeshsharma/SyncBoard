@@ -1,0 +1,45 @@
+<article class="sb-comment-thread">
+  <div class="sb-comment-thread__row">
+    <sb-user-avatar [user]="comment().author" [size]="28" />
+    <div class="sb-comment-thread__content">
+      <div class="sb-comment-thread__meta">
+        <span class="sb-comment-thread__author">{{ comment().author.fullName }}</span>
+        <span class="sb-comment-thread__time">{{ comment().createdAt | relativeTime }}</span>
+        @if (comment().editedAt) {
+          <span class="sb-comment-thread__edited">(edited)</span>
+        }
+      </div>
+
+      <p class="sb-comment-thread__body">{{ comment().bodyText }}</p>
+
+      <button mat-button type="button" class="sb-comment-thread__reply-toggle" (click)="toggleReply()">
+        {{ replyOpen() ? 'Cancel' : 'Reply' }}
+      </button>
+
+      @if (replyOpen()) {
+        <div class="sb-comment-thread__composer">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sb-comment-thread__field">
+            <textarea
+              matInput
+              rows="2"
+              placeholder="Write a reply…"
+              [ngModel]="draft()"
+              (ngModelChange)="draft.set($event)"
+            ></textarea>
+          </mat-form-field>
+          <button mat-flat-button color="primary" type="button" [disabled]="!draft().trim()" (click)="sendReply()">
+            Reply
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (comment().replies.length > 0) {
+    <div class="sb-comment-thread__replies">
+      @for (child of comment().replies; track child.id) {
+        <sb-comment-thread [comment]="child" [depth]="depth() + 1" (submitReply)="onNestedReply($event)" />
+      }
+    </div>
+  }
+</article>

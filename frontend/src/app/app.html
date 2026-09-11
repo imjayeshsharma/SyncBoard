@@ -1,0 +1,29 @@
+<!-- Stage 4 — Angular 22 shell -->
+<mat-toolbar color="primary" class="sb-toolbar">
+  <span class="sb-wordmark">SyncBoard</span>
+
+  <nav class="sb-nav">
+    <a mat-button routerLink="/board" routerLinkActive="sb-nav-active">Board</a>
+    <a mat-button routerLink="/my-tasks" routerLinkActive="sb-nav-active">My Tasks</a>
+  </nav>
+
+  <span class="sb-spacer"></span>
+
+  <a mat-flat-button color="accent" routerLink="/tickets/new" class="sb-new-ticket">
+    <mat-icon aria-hidden="true">add</mat-icon>
+    New ticket
+  </a>
+
+  @if (authStore.currentUser(); as user) {
+    <div class="sb-user" title="{{ user.fullName }}">
+      <span class="sb-avatar">{{ authStore.initials() }}</span>
+      <span class="sb-user-name">{{ user.fullName }}</span>
+    </div>
+  } @else if (authStore.loading()) {
+    <span class="sb-user sb-user-loading">Signing in…</span>
+  }
+</mat-toolbar>
+
+<main class="sb-content">
+  <router-outlet />
+</main>

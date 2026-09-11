@@ -1,0 +1,129 @@
+.sb-ticket-card {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 0.75rem 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: var(--mat-sys-surface, #fff);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  cursor: grab;
+  overflow: hidden;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+    transform: translateY(-1px);
+  }
+
+  &--overdue {
+    outline: 1px solid color-mix(in srgb, var(--sb-overdue, #b3261e) 40%, transparent);
+  }
+
+  &__stripe {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+
+    &[data-priority='Critical'] {
+      background: var(--sb-priority-critical, #b3261e);
+    }
+    &[data-priority='High'] {
+      background: var(--sb-priority-high, #e8730f);
+    }
+    &[data-priority='Medium'] {
+      background: var(--sb-priority-medium, #b8860b);
+    }
+    &[data-priority='Low'] {
+      background: var(--sb-priority-low, #2e7d32);
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    flex: 1;
+    padding-left: 0.35rem;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--mat-sys-on-surface, #1a1a1a);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__category {
+    font-size: 0.6875rem;
+    color: var(--mat-sys-on-surface-variant, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.15rem;
+  }
+
+  &__due {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-size: 0.6875rem;
+    color: var(--mat-sys-on-surface-variant, #666);
+    white-space: nowrap;
+  }
+
+  &__due-icon {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  &__counts {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.6875rem;
+    color: var(--mat-sys-on-surface-variant, #777);
+
+    mat-icon {
+      font-size: 0.9rem;
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}

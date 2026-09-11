@@ -1,0 +1,20 @@
+.sb-overdue-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--sb-overdue, #b3261e);
+  background: color-mix(in srgb, var(--sb-overdue, #b3261e) 14%, transparent);
+
+  &__icon {
+    font-size: 0.9rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    line-height: 1;
+  }
+}

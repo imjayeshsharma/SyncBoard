@@ -1,0 +1,89 @@
+// Stage 4 — Angular 22 shell
+// Global styles: Angular Material 22 M3 theming, priority/overdue/board tokens,
+// and a minimal reset. Loaded globally via angular.json `styles`.
+
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+
+  @include mat.theme(
+    (
+      color: (
+        theme-type: color-scheme,
+        primary: mat.$violet-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  // Priority colours — used by ticket cards/chips across features.
+  --sb-priority-critical: #d32f2f;
+  --sb-priority-high: #ef6c00;
+  --sb-priority-medium: #f9a825;
+  --sb-priority-low: #388e3c;
+
+  --sb-overdue: #d32f2f;
+
+  // Board column surfaces, keyed by TicketStatus wire value (contract §2).
+  --sb-column-open: light-dark(#eceff1, #263238);
+  --sb-column-triaging: light-dark(#e3f2fd, #0d3a58);
+  --sb-column-inprogress: light-dark(#fff8e1, #4a3b00);
+  --sb-column-underreview: light-dark(#ede7f6, #2e1a55);
+  --sb-column-blocked: light-dark(#ffebee, #4a1414);
+  --sb-column-completed: light-dark(#e8f5e9, #113a1a);
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --sb-priority-critical: #ef5350;
+    --sb-priority-high: #ff9800;
+    --sb-priority-medium: #ffca28;
+    --sb-priority-low: #66bb6a;
+    --sb-overdue: #ef5350;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--mat-sys-surface, light-dark(#fff, #121212));
+  color: var(--mat-sys-on-surface, light-dark(#1a1a1a, #e0e0e0));
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+// Global scrollbar reset.
+* {
+  scrollbar-width: thin;
+  scrollbar-color: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3)) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.sb-snackbar-error {
+  --mdc-snackbar-container-color: var(--sb-priority-critical);
+}
