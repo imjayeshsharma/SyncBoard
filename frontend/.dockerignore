@@ -1,0 +1,20 @@
+# Stage 8 — Infrastructure: keep the frontend build context small and clean
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+.pnpm-store/
+coverage/
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+.env
+.env.*
+!.env.example
+
+.git/
+.gitignore

@@ -1,0 +1,71 @@
+# Stage 8 — Infrastructure: single-host Docker Compose topology
+#
+# Local/single-host equivalent of the ECS + RDS + ElastiCache target topology described in
+# infra/aws/README.md. Bring up the whole stack with:
+#   cp .env.example .env   # then fill in real values
+#   docker compose up -d
+#
+# All configuration is environment-driven — nothing here is a secret. See .env.example for
+# every variable and its meaning.
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${SYNCBOARD_DB_NAME:-syncboard}
+      POSTGRES_USER: ${SYNCBOARD_DB_USER:-syncboard}
+      POSTGRES_PASSWORD: ${SYNCBOARD_DB_PASSWORD:-syncboard}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SYNCBOARD_DB_USER:-syncboard} -d ${SYNCBOARD_DB_NAME:-syncboard}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # Point the app at the compose service names rather than localhost. Values in .env
+      # take precedence over these if set explicitly there.
+      SYNCBOARD_DB_URL: ${SYNCBOARD_DB_URL:-jdbc:postgresql://postgres:5432/syncboard}
+      SYNCBOARD_REDIS_HOST: ${SYNCBOARD_REDIS_HOST:-valkey}
+      SYNCBOARD_REDIS_PORT: ${SYNCBOARD_REDIS_PORT:-6379}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+
+volumes:
+  postgres-data:
