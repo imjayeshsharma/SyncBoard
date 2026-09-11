@@ -1,0 +1,102 @@
+# Stage 7 — GraphQL read API
+#
+# Schema-first, read-only. Types mirror the REST DTOs in 01-CONTRACT.md §4; TicketStatus
+# and Priority enum values are the exact wire values, not the Java constant names.
+
+type Query {
+    "The full Kanban board: one column per non-cancelled TicketStatus."
+    board: Board!
+    "A single ticket by id, or null if it does not exist."
+    ticket(id: ID!): Ticket
+    "Tickets assigned to the currently authenticated user."
+    myTickets: [Ticket!]!
+}
+
+type Board {
+    columns: [BoardColumn!]!
+    generatedAt: DateTime!
+}
+
+type BoardColumn {
+    status: TicketStatus!
+    label: String!
+    tickets: [Ticket!]!
+}
+
+type Ticket {
+    id: ID!
+    title: String!
+    description: String
+    status: TicketStatus!
+    priority: Priority!
+    category: String
+    reporter: User!
+    assignee: User
+    dueAt: DateTime
+    overdue: Boolean!
+    blockedFromStatus: TicketStatus
+    commentCount: Int!
+    linkCount: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    closedAt: DateTime
+    version: Int!
+    "Batch-loaded per ticket — see BoardGraphQlController's @SchemaMapping methods."
+    links: [TicketLink!]!
+    comments: [Comment!]!
+    history: [StatusHistoryEntry!]!
+}
+
+type User {
+    id: ID!
+    fullName: String!
+    email: String!
+    department: String
+    active: Boolean!
+}
+
+type TicketLink {
+    id: ID!
+    url: String!
+    linkTitle: String
+    platform: String!
+    createdAt: DateTime!
+}
+
+type Comment {
+    id: ID!
+    bodyText: String!
+    author: User!
+    createdAt: DateTime!
+    editedAt: DateTime
+    replies: [Comment!]!
+}
+
+type StatusHistoryEntry {
+    id: ID!
+    fromStatus: TicketStatus
+    toStatus: TicketStatus!
+    changedBy: User!
+    changedAt: DateTime!
+    note: String
+}
+
+enum TicketStatus {
+    Open
+    Triaging
+    InProgress
+    Blocked
+    UnderReview
+    Completed
+    Cancelled
+}
+
+enum Priority {
+    Critical
+    High
+    Medium
+    Low
+}
+
+"An ISO-8601 UTC instant, e.g. 2026-09-08T12:34:56Z. See GraphQlScalarConfig."
+scalar DateTime
